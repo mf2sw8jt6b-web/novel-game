@@ -1,0 +1,91 @@
+// Сценарій гри
+const story = [
+    {
+        id: 1,
+        speaker: "Лололошка",
+        text: "*Дивиться в монітор* Знову ці нескінченні звіти. Здається, мої очі скоро відмовляться працювати...",
+        choices: [
+            { text: "Продовжити роботу", nextId: 2 },
+            { text: "Відкинутись на спинку крісла і заплющити очі", nextId: 3 }
+        ]
+    },
+    {
+        id: 2,
+        speaker: "Джон",
+        text: "Ого, ти ще живий? Я думав, тебе вже поглинула таблиця в Excel.",
+        choices: [
+            { text: "Відчепися, Джоне, у мене дедлайн.", nextId: 4 },
+            { text: "Дуже смішно. Краще б допоміг.", nextId: 5 }
+        ]
+    },
+    {
+        id: 3,
+        speaker: "Джон",
+        text: "Спиш на робочому місці? Обережно, бос сьогодні не в гуморі.",
+        choices: [
+            { text: "Відкрити очі та подивитись на Джона", nextId: 2 }
+        ]
+    },
+    {
+        id: 4,
+        speaker: "Джон",
+        text: "Які ми серйозні! Ну добре, працюй, трудоголіку. Але якщо вигориш, я тебе додому не понесу.",
+        choices: [
+            { text: "Кінець. (Грати знову)", nextId: 1 }
+        ]
+    },
+    {
+        id: 5,
+        speaker: "Джон",
+        text: "Допомогти? Без проблем. Але з тебе велика кава під час обідньої перерви. Домовились?",
+        choices: [
+            { text: "Кінець. (Грати знову)", nextId: 1 }
+        ]
+    }
+];
+
+// Змінні для керування грою
+const dialogueTextElement = document.getElementById("dialogue-text");
+const speakerNameElement = document.getElementById("speaker-name");
+const choicesElement = document.getElementById("choices");
+
+// Функція запуску гри
+function startGame() {
+    showNode(1);
+}
+
+// Функція відображення поточного кадру
+function showNode(nodeId) {
+    const node = story.find(n => n.id === nodeId);
+    if (!node) return;
+
+    // Зміна імені та тексту
+    speakerNameElement.innerText = node.speaker;
+    dialogueTextElement.innerText = node.text;
+
+    // Очищення старих кнопок
+    while (choicesElement.firstChild) {
+        choicesElement.removeChild(choicesElement.firstChild);
+    }
+
+    // Створення нових кнопок вибору
+    node.choices.forEach(choice => {
+        const button = document.createElement("button");
+        button.innerText = choice.text;
+        button.classList.add("choice-btn");
+        button.addEventListener("click", () => showNode(choice.nextId));
+        choicesElement.appendChild(button);
+    });
+    
+    // Колір імені залежно від того, хто говорить
+    if(node.speaker === "Лололошка") {
+        speakerNameElement.style.color = "#3498db"; // Блакитний
+    } else if (node.speaker === "Джон") {
+        speakerNameElement.style.color = "#e74c3c"; // Червоний
+    } else {
+        speakerNameElement.style.color = "#ecf0f1";
+    }
+}
+
+// Запускаємо гру при завантаженні скрипта
+startGame();
